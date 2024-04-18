@@ -551,9 +551,3 @@ button:disabled:hover {
   background-color: hsl(0, 0%, 48%);
   cursor: not-allowed;
 }
-. @media (max-width: 80em) and (min-width: 75em) {
-  .main-bkm-btn {
-    padding: 1.6rem 2.2rem 1.6rem 5rem;
-    /* color: red; */
-  }
-}

@@ -57,7 +57,6 @@ const noRewardInput = document.querySelector("#none");
 const bambooRewardInput = document.querySelector("#bamboo");
 const blackRewardInput = document.querySelector("#black");
 const mahoganyRewardInput = document.querySelector("#mahogany");
-let curAmount = +backed.innerHTML.replace(",", "");
 const subscriptionPlanCl = document.querySelectorAll(".subscription-plan");
 const activeBtn = document.querySelectorAll(".active-btn");
 
@@ -192,18 +191,22 @@ mobileBookmarkIcon.addEventListener("click", function () {
 const progressBarCl = document.querySelector(".progress");
 const max = 100000;
 
+let count = parseInt(personCounter.innerHTML);
+
 // ADD COUNT**
 function add() {
-  localStorage.setItem(
-    "counts",
-    JSON.stringify(parseInt(personCounter.innerHTML) + 1)
-  );
-  personCounter.innerHTML = JSON.parse(localStorage.getItem("counts"));
-  localStorage.getItem("counts");
-  console.log(personCounter.innerHTML);
+  localStorage.setItem("count", (count += 1));
+  personCounter.innerHTML = JSON.parse(
+    localStorage.getItem("count")
+  ).toLocaleString();
 }
 // add();
-personCounter.innerHTML = localStorage.getItem("counts");
+personCounter.innerHTML = JSON.parse(
+  localStorage.getItem("count")
+).toLocaleString();
+
+// let curAmount = +backed.innerHTML.replace(",", "");
+let curAmount = parseInt(backed.innerHTML);
 
 function percentageIncrement() {
   if (curAmount < max) {
@@ -222,26 +225,30 @@ function percentageIncrement() {
 }
 percentageIncrement();
 
-let cur;
 function addPledge(pledgeInputValue, minPledgeValue) {
   if (pledgeInputValue.value === "" || pledgeInputValue < minPledgeValue) {
-    minPledgeValue.innerHTML = minPledgeValue;
-    localStorage.setItem("cur", (curAmount += minPledgeValue).toLocaleString());
-    console.log(minPledgeValue);
-    backed.innerHTML = localStorage.getItem("cur");
+    localStorage.setItem("curAmount", parseInt((curAmount += minPledgeValue)));
+    backed.innerHTML = localStorage.getItem("curAmount").toLocaleString();
     percentageIncrement();
+    // add();
   }
   if (pledgeInputValue.value > minPledgeValue) {
     localStorage.setItem(
-      "cur",
-      (curAmount += parseInt(pledgeInputValue.value)).toLocaleString()
+      "curAmount",
+      (curAmount += parseInt(pledgeInputValue.value))
     );
-    backed.innerHTML = localStorage.getItem("cur");
-
+    backed.innerHTML = localStorage.getItem("curAmount").toLocaleString();
     percentageIncrement();
+    // add();
   }
 }
-backed.innerHTML = localStorage.getItem("cur");
+
+addPledge(amountPledged2, 25);
+
+// addPledge();
+backed.innerHTML = JSON.parse(
+  localStorage.getItem("curAmount")
+).toLocaleString();
 
 // spinner();
 function thanksLoad() {
@@ -263,73 +270,79 @@ function thanksLoad() {
 }
 thanksLoad();
 
+stockBamboo.forEach((stock) => {});
 let bmbLeft;
 function bambooLeft(btn) {
   stockBamboo.forEach((stockBam) => {
-    if (stockBam.innerHTML < 1) {
+    if (parseInt(stockBam.innerHTML) < 1) {
       btn.disabled = true;
       thankYou.style.display = "none";
-
+      console.log(parseInt(stockBam.innerHTML));
+      console.log(45);
       alert("over");
     } else {
       btn.disabled = false;
       localStorage.setItem(
         "bmbLeft",
-        JSON.stringify(parseInt(stockBam.innerHTML - 1))
+        JSON.stringify(parseInt((stockBam.innerHTML -= 1)))
       );
       stockBam.innerHTML = localStorage.getItem("bmbLeft");
-      newLeft = localStorage.getItem("bmbLeft");
+
+      bmbLeft = localStorage.getItem("bmbLeft");
     }
   });
-
-  add();
 }
+// bambooLeft(btnBam);
+
 stockBamboo.forEach((stock) => {
   stock.innerHTML = localStorage.getItem("bmbLeft");
+  console.log(localStorage.getItem("bmbLeft"));
 });
-let blkLeft;
 
+let blkLeft;
 function blackLeft(btn) {
   stockBlack.forEach((stockBlk) => {
-    if (stockBlk.innerHTML < 1) {
+    if (parseInt(stockBlk.innerHTML) < 1) {
       btn.disabled = true;
       thankYou.style.display = "none";
-      alert("over");
     } else {
       btn.disabled = false;
       localStorage.setItem(
         "blkLeft",
-        JSON.stringify(parseInt(stockBlk.innerHTML - 1))
+        JSON.stringify(parseInt((stockBlk.innerHTML -= 1)))
       );
       stockBlk.innerHTML = localStorage.getItem("blkLeft");
       blkLeft = localStorage.getItem("blkLeft");
-      console.log(localStorage.getItem("blkLeft"));
-      console.log(blkLeft);
     }
   });
-  add();
 }
+// blackLeft(btnBlk);
 stockBlack.forEach((stock) => {
   stock.innerHTML = localStorage.getItem("blkLeft");
 });
 
 const blur = document.querySelector(".blur-out");
 
-continueBtn1.addEventListener("click", function () {
+continueBtn1.addEventListener("click", function (e) {
+  e.preventDefault();
   add();
-  thanksLoad();
+  // thanksLoad();
 });
 
-continueBtn2.addEventListener("click", function () {
+continueBtn2.addEventListener("click", function (e) {
+  e.preventDefault();
   addPledge(amountPledged2, 25);
   bambooLeft(btnBam);
+  add();
   thanksLoad();
   percentageIncrement();
 });
 
-continueBtn3.addEventListener("click", function () {
+continueBtn3.addEventListener("click", function (e) {
+  e.preventDefault();
   addPledge(amountPledged3, 75);
   blackLeft(btnBlk);
+  add();
   thanksLoad();
   percentageIncrement();
 });
